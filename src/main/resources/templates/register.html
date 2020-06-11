@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+    <body>
+        <div class="signup-form">
+            <form  id="regForm" class="" action="index.html" method="post">
+                <h1>Sign Up</h1>
+                <input type="text" name="name" placeholder="Name" class="txtb" th:onblur="|checkUsername(this)|">
+                <div id="msg1"  placeholder="Name" class="txtb" style="display: none">
+                    <label class="alert-danger" id="tip1" style="font-family: 方正粗黑宋简体">用户名已存在!请更换用户名！</label>
+                </div>
+                <input type="email" name="id" placeholder="Email" class="txtb" th:onblur="|checkUserid(this)|">
+                <div id="msg2"  placeholder="Name" class="txtb" style="display: none">
+                    <label class="alert-danger" id="tip2" style="font-family: 方正粗黑宋简体">邮箱已存在!请更换登录邮箱！</label>
+                </div>
+                <input type="password" name="password" placeholder="Password" class="txtb">
+                <input type="button" id="button" value="Create Account" class="signup-btn" th:onclick="|register()|">
+                <a href="#" th:href="@{/user/tologin}">Already Have one ?</a>
+            </form>
+        </div>
+        <script src="js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+        <script th:inline="javascript">
+            //获取应用路径
+            var contextPath = [[${#request.getContextPath()}]];
+        </script>
+        <script>
+            //验证用户名是否已经存在
+            function checkUsername(obj) {
+                $.ajax({
+                    url: contextPath + "/user/checkUserName",
+                    data:{"name":obj.value},
+                    method:"post",
+                    success:function (data) {
+                        $("#msg1").css("display","block");
+                        if(data == "102"){
+                             //用户存在
+                            $("#msg1").css("display","block");
+                            $("#tip1").html("用户名已存在!请更换用户名！");
+                            $("#button").attr('disabled',true);
+                            $("#tip1").removeClass("alert-success");
+                            $("#tip1").addClass("alert-danger");
+                        } else {
+                            $("#msg1").css("display","block");
+                            $("#tip1").html("此用户名可以注册！");
+                            $("#button").attr('disabled',false);
+                            $("#tip1").removeClass("alert-danger");
+                            $("#tip1").addClass("alert-success");
+                        }
+                    }
+                })
+            }
+
+            //验证邮箱格式
+            function emailCheck(emailAddr)
+            {
+                if((emailAddr == null) || (emailAddr.length < 2)) return false ;
+                // 需出现'@',且不在首字符.
+                var aPos = emailAddr.indexOf("@" ,1) ;
+                if(aPos < 0)
+                {
+                    return false ;
+                }
+                // '@'后出现'.',且不紧跟其后.
+                if(emailAddr.indexOf("." ,aPos+2) < 0)
+                {
+                    return false ;
+                }
+                return true ;
+            }
+
+            //验证邮箱是否已经注册过
+            function checkUserid(obj) {
+                $.ajax({
+                    url: contextPath + "/user/checkUserId",
+                    data:{"id":obj.value},
+                    method:"post",
+                    success:function (data) {
+                        $("#msg2").css("display","block");
+                        if(emailCheck(obj.value)==true){
+                            if(data == "202"){
+                            //邮箱存在
+                            $("#msg2").css("display","block");
+                            $("#tip2").html("邮箱账号已存在!请更换邮箱！");
+                            $("#button").attr('disabled',true);
+                            $("#tip2").removeClass("alert-success");
+                            $("#tip2").addClass("alert-danger");
+                        } else {
+                            $("#msg2").css("display","block");
+                            $("#tip2").html("此邮箱可以注册！");
+                            $("#button").attr('disabled',false);
+                            $("#tip2").removeClass("alert-danger");
+                            $("#tip2").addClass("alert-success");
+                        }} else{
+                            $("#msg2").css("display","block");
+                            $("#tip2").html("邮箱格式错误！请修改！");
+                            $("#button").attr('disabled',true);
+                            $("#tip2").removeClass("alert-danger");
+                            $("#tip2").addClass("alert-success");
+                        }
+
+                    }
+                })
+            }
+
+            //注册
+            function register() {
+                var datas = $("#regForm").serialize();
+                $.ajax({
+                    url: contextPath + "/user/register",
+                    data:datas,
+                    method:"post",
+                    success:function (data) {
+                        if(data=="success"){
+                            alert("注册成功,请登录！");
+                            window.location.href = contextPath + "/index";
+                        } else {
+                            alert("请按照输入框中的指示更改!");
+                        }
+                    }
+                })
+            }
+            
+        </script>
+    </body>
+</html>

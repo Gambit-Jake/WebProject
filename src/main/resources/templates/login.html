@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+    <body>
+        <div class="signup-form">
+            <form  id="loginForm" class="" action="index.html" method="post">
+                <h1>Log In</h1>
+                <input type="email" name="id" placeholder="Email" class="txtb" th:onblur="|checkUserid(this)|">
+                <div id="msg1"  placeholder="Name" class="txtb" style="display: none">
+                    <label class="alert-danger" id="tip1" style="font-family: 方正粗黑宋简体">邮箱未注册!请先注册！</label>
+                </div>
+                <input type="password" name="password" placeholder="Password" class="txtb">
+                <input type="button" id="button" value="Log In" class="signup-btn" th:onclick="|login()|">
+                <div id="msg2"  placeholder="Name" class="txtb" style="display: none">
+                    <label class="alert-danger" id="tip2" style="font-family: 方正粗黑宋简体">密码错误！</label>
+                </div>
+            </form>
+        </div>
+        <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+        <script th:inline="javascript">
+            //获取应用路径
+            var contextPath = [[${#request.getContextPath()}]];
+        </script>
+        <script>
+
+            //验证邮箱是否已经注册过
+            function checkUserid(obj) {
+                $.ajax({
+                    url: contextPath + "/user/checkUserId",
+                    data:{"id":obj.value},
+                    method:"post",
+                    success:function (data) {
+                        $("#msg1").css("display","block");
+                            if(data == "201"){
+                            //邮箱未注册
+                            $("#msg1").css("display","block");
+                            $("#tip1").html("邮箱账号未注册!请先注册！");
+                            $("#tip1").removeClass("alert-success");
+                            $("#tip1").addClass("alert-danger");
+                        } else {
+                            $("#msg1").css("display","block");
+                            $("#tip1").html("邮箱账号已注册!请输入密码！");
+                            $("#tip1").removeClass("alert-danger");
+                            $("#tip1").addClass("alert-success");
+                            }
+                    }
+                })
+            }
+
+            //登录
+            function login() {
+                var datas = $("#loginForm").serialize();
+                $.ajax({
+                    url: contextPath + "/user/login",
+                    data:datas,
+                    method:"post",
+                    success:function (data) {
+                        $("#msg2").css("display","block");
+                        if(data=="101"){
+                            $("#msg2").css("display","block");
+                            $("#tip2").html("登录成功！正在切换主页！");
+                            $("#tip2").removeClass("alert-success");
+                            $("#tip2").addClass("alert-danger");
+                            window.location.href = contextPath + "/index";
+                        } else {
+                            $("#msg2").css("display","block");
+                            $("#tip2").html("密码错误！");
+                            $("#tip2").removeClass("alert-success");
+                            $("#tip2").addClass("alert-danger");
+                        }
+                    }
+                })
+            }
+            
+        </script>
+    </body>
+</html>

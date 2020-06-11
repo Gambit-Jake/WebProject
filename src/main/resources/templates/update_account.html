@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>个人资料-西电树洞网</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../static/css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}">
+    <link rel="stylesheet" href="../static/css/some.css" th:href="@{/css/some.css}">
+    <link rel="stylesheet" href="../static/css/editormd.min.css" th:href="@{/css/editormd.min.css}">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="../static/js/community.js" th:src="@{/js/community.js}"></script>
+    <script src="../static/js/editormd.min.js" th:src="@{/js/editormd.min.js}"></script>
+</head>
+
+<body>
+    <div th:insert="common/navigation :: nav"></div>
+
+    <div class="container-fluid main">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <h2><span class="glyphicon glyphicon-send" aria-hidden="true"></span>  个人资料</h2>
+                <hr>
+                <form action="/personal/update">
+                    <div class="form-group">
+                        <label for="name">你的姓名</label>
+                        <input type="text" class="form-control" id="name" name="name"  th:value="${session.user.name}">
+                    </div>
+                    <div class="form-group">
+                        <label for="password1">原始密码</label>
+                        <input type="password" class="form-control" id="password1" name="password1" th:value="${session.user.password}">
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">若更改请再次确认密码</label>
+                        <input type="password" class="form-control" id="password2" name="password2" placeholder="若更改在此处请再次确认密码...">
+                    </div>
+                    <div class="form-group">
+                        <label for="url">头像地址</label>
+                        <input type="text" class="form-control" name="url" id="url" th:value="${session.user.imgurl}">
+                    </div>
+
+                    <div class="container-fluid main">
+                        <div class="row">
+                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                <div th:if="${error !=null}">
+                            <div class="alert alert-danger col-lg-9 col-md-12 col-sm-12 col-xs-12" th:text="${error}"></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                <button type="submit" class="btn btn-success btn-publish">更改</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <h3>个人资料更改指南</h3>
+            <hr>
+            · 特别注意：更改头像时请输入正确的图片的网页地址!<br>
+            · 密码更改：请注意两次输入的保持一致！<br>
+            · 头像地址：注意URL长度大小不要过长！<br>
+            </div>
+        </div>
+    </div>
+    <div th:insert="common/footer :: foot"></div>
+</body>
+</html>
